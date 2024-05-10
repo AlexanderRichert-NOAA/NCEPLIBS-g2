@@ -91,7 +91,7 @@ if(FTP_TEST_FILES)
 
   # User may also ask for large test file.
   if(FTP_LARGE_TEST_FILES)
-    set(FTP_FILES ${FTP_FILES} fv3lam.t00z.prslev.f000.grib2)
+    set(FTP_FILES ${FTP_FILES} fv3lam.t00z.prslev.f000.grib2 rrfs.t12z.prslevfaa.f010.na3km.grib2 grib2.awips.rrfs.010)
   endif()
 
   # User may also ask for extra large test files.
