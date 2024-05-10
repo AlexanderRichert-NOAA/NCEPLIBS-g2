@@ -133,6 +133,7 @@ if(FTP_TEST_FILES)
       create_test(test_fv3 ${kind})
       create_test(test_create_index_fv3 ${kind})
       create_test(test_files_fv3 ${kind})
+      create_test(test_getgb2p_2 ${kind})
     endif()
     if(FTP_EXTRA_TEST_FILES)    
       create_test(test_create_index_gfsprs ${kind})
@@ -189,7 +190,6 @@ foreach(kind ${kinds})
   create_test(test_gettemplates ${kind})
   create_test(test_addfield ${kind})
   create_test(test_gf_unpack2 ${kind})
-  create_test(test_getgb2p_2 ${kind})
 
   # This test depends on gdt2gds(), which is not present if the GRIB1
   # library is not also included in the build.
