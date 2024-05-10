@@ -10,17 +10,12 @@ PROGRAM test_getgb2p_2
   use gridtemplates
   integer,dimension(200) :: IDS,GDT,PDT
   integer   ::    DSCPL,GDTN,PDTN
-  integer   ::    nrec,mbul,dayofmonth,hourofday
-  integer,parameter :: lenhead=21,jrew=0
+  integer   ::    nrec
+  integer,parameter :: jrew=0
   character * 1 :: a7,b7,c7,d7
 
-  CHARACTER * 6   BULHED
   CHARACTER * 80  DESC,WMOHEAD
   CHARACTER * 200  fileb,filei,fileo
-  CHARACTER * 6   envvar
-  CHARACTER * 4   KWBX
-  CHARACTER * 1   CSEP(80)
-  CHARACTER * 1   WMOHDR(lenhead)
   character(len=1),pointer,dimension(:) :: gribm
 
   logical :: extract=.false.
