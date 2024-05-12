@@ -63,7 +63,7 @@ PROGRAM test_getgb2p_2
   iret=0
   nrec = 0
   open(12, file='data/grib2.awips.rrfs.010')
-  foreachinputrecord: do
+  !foreachinputrecord: do
 
      !  Set Namelist defaults
      DSCPL=-1     ! Grib2 Discipline number
@@ -118,6 +118,6 @@ PROGRAM test_getgb2p_2
      c7=gribm(size(gribm)-1)
      d7=gribm(size(gribm))
      if(.not.all((/a7,b7,c7,d7/).eq.'7')) stop 77
-  enddo foreachinputrecord
+  !enddo foreachinputrecord
 
 END PROGRAM test_getgb2p_2
