@@ -118,6 +118,7 @@ PROGRAM test_getgb2p_2
      c7=gribm(size(gribm)-1)
      d7=gribm(size(gribm))
      if(.not.all((/a7,b7,c7,d7/).eq.'7')) stop 77
+     deallocate(gribm)
     return
   enddo foreachinputrecord
 
