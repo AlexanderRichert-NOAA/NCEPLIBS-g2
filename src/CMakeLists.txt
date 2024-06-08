@@ -53,7 +53,6 @@ foreach(kind ${kinds})
   # Assemble the library.
   add_library(${lib_name} $<TARGET_OBJECTS:${lib_name}_f> $<TARGET_OBJECTS:${lib_name}_c>)
   
-  # Link to bacio, and jasper always.
   target_link_libraries(${lib_name} PUBLIC bacio::bacio ${PNG_LIBRARIES} ${JASPER_LIBRARIES})
   # Link to w3emc if necessary.
   if (BUILD_WITH_W3EMC)
@@ -73,20 +72,20 @@ foreach(kind ${kinds})
   list(APPEND LIB_TARGETS ${lib_name})
 
   # Build with Jasper.
-  if(JASPER_FOUND)
-    message(STATUS "Found JASPER:")
-    message(STATUS "      JASPER include directories ${JASPER_INCLUDE_DIR}")
-    message(STATUS "      JASPER libraries ${JASPER_LIBRARIES} version ${JASPER_VERSION}")
-    target_sources(${lib_name} PRIVATE g2cjpeg2000.c)
-    target_compile_definitions(${lib_name} PRIVATE USE_JPEG2000)
-    target_include_directories(${lib_name} PRIVATE "${JASPER_INCLUDE_DIR}")
-    set(G2_JPEG2000_ENABLED ON)
-    if(JASPER_VERSION_STRING VERSION_GREATER_EQUAL "3")
-      message(STATUS "      JASPER is version 3.0 or greater")
-      add_definitions(-DJASPER3)
-    endif()
-    add_definitions(-DJPEG)
+  message(STATUS "Found JASPER:")
+  message(STATUS "      JASPER include directories ${JASPER_INCLUDE_DIR}")
+  message(STATUS "      JASPER libraries ${JASPER_LIBRARIES} version ${JASPER_VERSION}")
+  target_link_libraries(${lib_name} PUBLIC g2c::g2c)
+  if(USE_AEC)
+    add_definitions(-DUSE_AEC)
   endif()
+  target_include_directories(${lib_name} PRIVATE "${JASPER_INCLUDE_DIR}")
+  set(G2_JPEG2000_ENABLED ON)
+  if(JASPER_VERSION_STRING VERSION_GREATER_EQUAL "3")
+    message(STATUS "      JASPER is version 3.0 or greater")
+    add_definitions(-DJASPER3)
+  endif()
+  add_definitions(-DJPEG)
 
   install(DIRECTORY ${module_dir} DESTINATION ${CMAKE_INSTALL_PREFIX})
 

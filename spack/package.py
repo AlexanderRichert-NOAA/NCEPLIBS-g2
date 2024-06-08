@@ -37,9 +37,12 @@ class G2(CMakePackage):
         when="@3.4.6:",
     )
     variant("w3emc", default=True, description="Enable GRIB1 through w3emc", when="@3.4.6:")
+    variant("aec", default=True, description="Use AEC library", when="@develop")
 
     depends_on("jasper@:2.0.32", when="@:3.4.7")
     depends_on("jasper")
+    depends_on("g2c", when="@develop")
+    depends_on("g2c +aec", when="+aec")
     depends_on("libpng")
     depends_on("bacio", when="@3.4.6:")
     with when("+w3emc"):
@@ -51,6 +54,7 @@ class G2(CMakePackage):
         args = [
             self.define_from_variant("CMAKE_POSITION_INDEPENDENT_CODE", "pic"),
             self.define_from_variant("BUILD_WITH_W3EMC", "w3emc"),
+            self.define_from_variant("USE_AEC", "aec"),
             self.define("BUILD_4", self.spec.satisfies("precision=4")),
             self.define("BUILD_D", self.spec.satisfies("precision=d")),
         ]
