@@ -28,7 +28,7 @@ jobs:
         os: ["ubuntu-latest"]
         pic: ["+pic", "~pic"]
         precision: ["precision=d", "precision=4"]
-        w3emc: ["+w3emc", "~w3emc"]
+        w3emc_aec: ["+w3emc +aec", "~w3emc ~aec"]
     runs-on: ${{ matrix.os }}
 
     steps:
@@ -46,7 +46,7 @@ jobs:
         spack env activate g2-env
         cp $GITHUB_WORKSPACE/g2/spack/package.py $SPACK_ROOT/var/spack/repos/builtin/packages/g2/package.py
         spack develop --no-clone --path $GITHUB_WORKSPACE/g2 g2@develop
-        spack add g2@develop%gcc@11 ${{ matrix.pic }} ${{ matrix.precision }} ${{ matrix.w3emc }}
+        spack add g2@develop%gcc@11 ${{ matrix.pic }} ${{ matrix.precision }} ${{ matrix.w3emc_aec }}
         spack external find cmake gmake
         spack concretize
         # Run installation and run CTest suite
