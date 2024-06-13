@@ -216,6 +216,9 @@ subroutine addfield(cgrib, lcgrib, ipdsnum, ipdstmpl, ipdstmplen, &
   character(len=4):: ctemp
   character(len=1), allocatable :: cpack(:)
   real, pointer, dimension(:) :: pfld
+#if KIND==4
+  real(8), pointer, dimension(:) :: pfld8
+#endif
   real(4) :: coordieee(numcoord), re00, tmpre00(1)
   integer(4) :: ire00, allones
   integer :: mappds(ipdstmplen), intbmap(ngrdpts), mapdrs(idrstmplen)
@@ -232,6 +235,15 @@ subroutine addfield(cgrib, lcgrib, ipdsnum, ipdstmpl, ipdstmplen, &
   real (kind = 4) :: tmpfld(1)
 
   interface
+     SUBROUTINE aecpack(fld, width, height, idrstmpl, cpack, lcpack) BIND(C)
+       USE, INTRINSIC :: ISO_C_BINDING
+       IMPLICIT NONE
+       REAL(C_DOUBLE), pointer :: fld(:) !ftn ptr
+       INTEGER(C_INT), target :: idrstmpl(1) !ftn values
+       CHARACTER(C_CHAR), target :: cpack(1) !ftn values
+       INTEGER(C_INT), target :: lcpack !ftn value
+       INTEGER(C_INT), target :: width, height !ftn values
+     END SUBROUTINE aecpack
      subroutine g2_gbytec(in, iout, iskip, nbits)
        character*1, intent(in) :: in(*)
        integer, intent(inout) :: iout(*)
@@ -528,7 +540,12 @@ subroutine addfield(cgrib, lcgrib, ipdsnum, ipdstmpl, ipdstmplen, &
         width=ndpts
         height=1
      endif
+#if KIND==4
+     call aecpack(pfld8, width, height, idrstmpl, cpack, lcpack);
+     pfld = real(pfld8)
+#else
      call aecpack(pfld, width, height, idrstmpl, cpack, lcpack);
+#endif
 #endif /* USE_AEC */
   else
      print *, 'addfield: Data Representation Template 5.', idrsnum, &

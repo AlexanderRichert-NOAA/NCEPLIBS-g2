@@ -647,17 +647,34 @@ end subroutine gf_unpack6
 !> @author Stephen Gilbert @date 2002-01-24
 subroutine gf_unpack7(cgrib, lcgrib, iofst, igdsnum, igdstmpl,  &
      idrsnum, idrstmpl, ndpts, fld, ierr)
+  use iso_c_binding
   implicit none
-
-  character(len = 1), intent(in) :: cgrib(lcgrib)
+  character(len = 1), target, intent(in) :: cgrib(lcgrib)
   integer, intent(in) :: lcgrib, ndpts, igdsnum, idrsnum
   integer, intent(inout) :: iofst
   integer, pointer, dimension(:) :: igdstmpl, idrstmpl
   integer, intent(out) :: ierr
   real, pointer, dimension(:) :: fld
+#if KIND==4
+  real(kind=8), pointer, dimension(:) :: fld8
+#endif
+!  type(c_ptr) :: fld_cptr
+!  type(c_ptr), pointer :: cgrib_cptr, idrstmpl_cptr
   integer :: ier,  ipos,  istat,  lensec
   real (kind = 4) :: ieee(1)
   real :: tmpfld(1)
+
+  interface
+  SUBROUTINE aecunpack(cgrib, lensec, idrstmpl, ndpts, fld) BIND(C)
+    USE, INTRINSIC :: ISO_C_BINDING
+    IMPLICIT NONE
+    CHARACTER(C_CHAR), target, intent(in) :: cgrib(1)
+    INTEGER(C_INT), target, intent(in) :: lensec
+    INTEGER(C_INT), pointer, intent(in) :: idrstmpl(:)
+    INTEGER(C_INT), target, intent(in) :: ndpts
+    REAL(C_DOUBLE), pointer, intent(out) :: fld(:)
+  END SUBROUTINE aecunpack
+  end interface
 
   ierr = 0
   nullify(fld)
@@ -703,7 +720,13 @@ subroutine gf_unpack7(cgrib, lcgrib, iofst, igdsnum, igdstmpl,  &
      call pngunpack(cgrib(ipos), lensec-5, idrstmpl, ndpts, fld)
 #ifdef USE_AEC
   elseif (idrsnum .eq. 42) then
-     call aecunpack(cgrib(ipos), lensec-5, idrstmpl, ndpts, fld);
+#if KIND==4
+     allocate(fld8(ndpts))
+     call aecunpack(cgrib, lensec-5, idrstmpl, ndpts, fld8);
+     fld(:ndpts) = real(fld8(:ndpts))
+#else
+     call aecunpack(cgrib, lensec-5, idrstmpl, ndpts, fld);
+#endif /* KIND==4 */
 #endif /* USE_AEC */
   else
      print *, 'gf_unpack7: Data Representation Template ', idrsnum, ' not yet implemented.'

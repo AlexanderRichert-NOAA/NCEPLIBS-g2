@@ -554,6 +554,7 @@ subroutine getfield(cgrib, lcgrib, ifldnum, igds, igdstmpl, &
   integer, intent(out) :: ndpts, ibmap, idefnum, numcoord
   integer, intent(out) :: igdslen, ipdslen, idrslen
   real, intent(out) :: fld(*), coordlist(*)
+  real(kind = 8), allocatable :: fld8(:)
   logical*1, intent(out) :: bmap(*)
   integer, intent(out) :: ierr
 
@@ -566,6 +567,19 @@ subroutine getfield(cgrib, lcgrib, ifldnum, igds, igdstmpl, &
   integer (kind = 8) :: lengrib8
   integer :: numfld, j, lengrib, lensec0, ipos
   integer :: lensec, isecnum, jerr, ier, numlocal
+
+  interface
+  SUBROUTINE aecunpack(cpack, len, idrstmpl, ndpts, fld) BIND(C)
+    USE, INTRINSIC :: ISO_C_BINDING
+    IMPLICIT NONE
+    CHARACTER(C_CHAR), target :: cpack(1) !ftn values
+    INTEGER(C_INT), target :: len !ftn values
+    INTEGER(C_INT), target :: idrstmpl(1) !ftn values
+    INTEGER(C_INT), target :: ndpts !ftn value
+    REAL(C_DOUBLE), target :: fld(1) !ftn values
+  END SUBROUTINE aecunpack
+  end interface
+
 
   have3 = .false.
   have4 = .false.
@@ -738,8 +752,15 @@ subroutine getfield(cgrib, lcgrib, ifldnum, igds, igdstmpl, &
            have7 = .true.
 #ifdef USE_AEC
         elseif (idrsnum .eq. 42) then
+#if KIND==4
+           allocate(fld8(ndpts))
+           call aecunpack(cgrib(ipos + 5), lensec - 5, idrstmpl, &
+                ndpts, fld8);
+           fld(:ndpts) = real(fld8(:ndpts), kind=4)
+#else
            call aecunpack(cgrib(ipos + 5), lensec - 5, idrstmpl, &
                 ndpts, fld);
+#endif
            have7 = .true.
 #endif /* USE_AEC */
         else
