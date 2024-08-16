@@ -544,6 +544,9 @@ subroutine getfield(cgrib, lcgrib, ifldnum, igds, igdstmpl, &
      igdslen, ideflist, idefnum, ipdsnum, ipdstmpl, ipdslen, &
      coordlist, numcoord, ndpts, idrsnum, idrstmpl, idrslen,  &
      ibmap, bmap, fld, ierr)
+
+  use, intrinsic :: iso_c_binding, only: c_char, c_size_t, c_int, c_float, c_double
+
   implicit none
 
   character(len = 1), intent(in) :: cgrib(lcgrib)
@@ -552,6 +555,7 @@ subroutine getfield(cgrib, lcgrib, ifldnum, igds, igdstmpl, &
   integer, intent(out) :: ipdsnum, ipdstmpl(*)
   integer, intent(out) :: idrsnum, idrstmpl(*)
   integer, intent(out) :: ndpts, ibmap, idefnum, numcoord
+  integer(c_size_t) :: ndpts_c
   integer, intent(out) :: igdslen, ipdslen, idrslen
   real, intent(out) :: fld(*), coordlist(*)
   real(kind = 8), allocatable :: fld8(:)
@@ -567,17 +571,28 @@ subroutine getfield(cgrib, lcgrib, ifldnum, igds, igdstmpl, &
   integer (kind = 8) :: lengrib8
   integer :: numfld, j, lengrib, lensec0, ipos
   integer :: lensec, isecnum, jerr, ier, numlocal
+  integer(c_size_t) :: lensec_c
+  integer(c_int) :: aec_rc
 
   interface
-  SUBROUTINE aecunpack(cpack, len, idrstmpl, ndpts, fld) BIND(C)
-    USE, INTRINSIC :: ISO_C_BINDING
-    IMPLICIT NONE
-    CHARACTER(C_CHAR), target :: cpack(1) !ftn values
-    INTEGER(C_INT), target :: len !ftn values
-    INTEGER(C_INT), target :: idrstmpl(1) !ftn values
-    INTEGER(C_INT), target :: ndpts !ftn value
-    REAL(C_DOUBLE), target :: fld(1) !ftn values
-  END SUBROUTINE aecunpack
+    function g2c_aecunpackf(cpack, len, idrstmpl, ndpts, fld) bind(C, name="g2c_aecunpackf")
+        import :: c_char, c_size_t, c_int, c_float, c_double
+        character(kind=c_char), dimension(*), intent(in) :: cpack
+        integer(kind=c_size_t), value :: len
+        integer(kind=c_int), dimension(*), intent(inout) :: idrstmpl
+        integer(kind=c_size_t), intent(out) :: ndpts
+        real(c_float), dimension(*), intent(out) :: fld
+        integer(c_int) :: g2c_aecunpackf
+    end function g2c_aecunpackf
+    function g2c_aecunpackd(cpack, len, idrstmpl, ndpts, fld) bind(C, name="g2c_aecunpackd")
+        import :: c_char, c_size_t, c_int, c_float, c_double
+        character(kind=c_char), dimension(*), intent(in) :: cpack
+        integer(kind=c_size_t), value :: len
+        integer(kind=c_int), dimension(*), intent(inout) :: idrstmpl
+        integer(kind=c_size_t), intent(out) :: ndpts
+        real(c_double), dimension(*), intent(out) :: fld
+        integer(c_int) :: g2c_aecunpackd
+    end function g2c_aecunpackd
   end interface
 
 
@@ -752,15 +767,13 @@ subroutine getfield(cgrib, lcgrib, ifldnum, igds, igdstmpl, &
            have7 = .true.
 #ifdef USE_AEC
         elseif (idrsnum .eq. 42) then
+           lensec_c = int(lensec, kind=c_size_t)
 #if KIND==4
-           allocate(fld8(ndpts))
-           call aecunpack(cgrib(ipos + 5), lensec - 5, idrstmpl, &
-                ndpts, fld8);
-           fld(:ndpts) = real(fld8(:ndpts), kind=4)
+           aec_rc = g2c_aecunpackf(cpack=cgrib(ipos + 5), len=lensec_c - 5, idrstmpl=idrstmpl, ndpts=ndpts_c, fld=fld)
 #else
-           call aecunpack(cgrib(ipos + 5), lensec - 5, idrstmpl, &
-                ndpts, fld);
+           aec_rc = g2c_aecunpackd(cpack=cgrib(ipos + 5), len=lensec_c - 5, idrstmpl=idrstmpl, ndpts=ndpts_c, fld=fld)
 #endif
+           ndpts = int(ndpts_c)
            have7 = .true.
 #endif /* USE_AEC */
         else
