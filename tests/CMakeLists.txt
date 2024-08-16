@@ -4,7 +4,7 @@
 # Ed Hartnett
 
 # This is needed for macos to work on GitHub CI.
-link_directories("/usr/local/lib")
+#link_directories("/usr/local/lib")
 
 # Some test files are large and are kept on the NOAA EMC FTP
 # site. This function is used to download such test data. It takes two
