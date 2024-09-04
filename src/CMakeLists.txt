@@ -16,7 +16,7 @@ if (BUILD_WITH_W3EMC)
 endif()
 
 if (USE_AEC)
-  set(fortran_src g2aec.F90)
+  set(fortran_src ${fortran_src} g2aec.F90)
 endif()
 
 # These are the C source files.
