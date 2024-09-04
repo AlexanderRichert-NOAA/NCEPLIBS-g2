@@ -76,7 +76,7 @@ subroutine aecpack(fld,width,height,idrstmpl,cpack,lcpack)
 #else
   ret = g2c_aecpackd(fld, width_c, height_c, idrstmpl, cpack, lcpack_c)
 #endif
-  
+  print *, ret 
 end subroutine
   
 !> Unpack a data field from a AEC code stream as defined in
@@ -135,4 +135,6 @@ subroutine aecunpack(cpack,len,idrstmpl,ndpts,fld)
   ret = g2c_aecunpackd(cpack, len_c, idrstmpl, ndpts_c, fld)
 #endif
   
+  print *, ret 
+
 end subroutine aecunpack
