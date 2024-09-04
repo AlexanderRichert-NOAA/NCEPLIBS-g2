@@ -24,7 +24,7 @@ program test_aecpack
   idrstmpl(3) = 1
   idrstmpl(4) = 0
   idrstmpl(5) = 0
-  idrstmpl(6) = 13
+  idrstmpl(6) = 0
   idrstmpl(7) = 16
   idrstmpl(8) = 128
 
