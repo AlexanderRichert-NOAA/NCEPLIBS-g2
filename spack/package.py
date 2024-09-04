@@ -37,6 +37,7 @@ class G2(CMakePackage):
         when="@3.4.6:",
     )
     variant("w3emc", default=True, description="Enable GRIB1 through w3emc", when="@3.4.6:")
+    variant("aec", default=True, description="Use AEC library", when="@develop")
     variant("shared", default="False", when="@3.4.7:")
     variant("openmp", default=False, description="Use OpenMP multithreading")
     variant("utils", default=False, description="Build grib utilities")
@@ -45,6 +46,7 @@ class G2(CMakePackage):
     depends_on("jasper@:2.0.32", when="@:3.4.7")
     depends_on("jasper")
     depends_on("g2c", when="@develop")
+    depends_on("g2c +aec", when="+aec")
     depends_on("libpng")
     depends_on("zlib-api")
     depends_on("bacio", when="@3.4.6:")
