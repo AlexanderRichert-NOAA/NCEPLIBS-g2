@@ -74,7 +74,6 @@ subroutine jpcpack(fld,width,height,idrstmpl,cpack,lcpack)
   ret = g2c_jpcpackd(fld, width_c, height_c, idrstmpl, cpack, lcpack)
 #endif
 
- 
 end subroutine
 
 !> Unpack a data field from a JPEG2000 code stream as defined in

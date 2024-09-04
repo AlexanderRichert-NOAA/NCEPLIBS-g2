@@ -70,13 +70,12 @@ subroutine aecpack(fld,width,height,idrstmpl,cpack,lcpack)
     width_c = width
     height_c = height
   
-  #if KIND==4
+#if KIND==4
     ret = g2c_aecpackf(fld, width_c, height_c, idrstmpl, cpack, lcpack)
-  #else
+#else
     ret = g2c_aecpackd(fld, width_c, height_c, idrstmpl, cpack, lcpack)
-  #endif
+#endif
   
-   
   end subroutine
   
   !> Unpack a data field from a AEC code stream as defined in
@@ -129,11 +128,11 @@ subroutine aecpack(fld,width,height,idrstmpl,cpack,lcpack)
   
     len_c = len
     ndpts_c = ndpts
-  #if KIND==4
+#if KIND==4
     ret = g2c_aecunpackf(cpack, len_c, idrstmpl, ndpts_c, fld)
-  #else
+#else
     ret = g2c_aecunpackd(cpack, len_c, idrstmpl, ndpts_c, fld)
-  #endif
+#endif
   
   end subroutine aecunpack
   
