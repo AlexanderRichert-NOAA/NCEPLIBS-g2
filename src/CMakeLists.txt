@@ -15,6 +15,10 @@ if (BUILD_WITH_W3EMC)
   set(fortran_src ${fortran_src} gdt2gds.F90)
 endif()
 
+if (USE_AEC)
+  set(fortran_src g2aec.F90)
+endif()
+
 # These are the C source files.
 set(c_src mova2i.c)
 
