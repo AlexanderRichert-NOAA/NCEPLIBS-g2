@@ -46,6 +46,9 @@ foreach(kind ${kinds})
   # being built.
   target_compile_definitions(${lib_name}_f PUBLIC KIND=${kind})
 
+  if (USE_AEC)
+    target_compile_definitions(${lib_name}_f PRIVATE USE_AEC)
+  endif()
   # Build the C code.
   add_library(${lib_name}_c OBJECT ${c_src})
   target_include_directories(${lib_name}_c PRIVATE ${JASPER_INCLUDE_DIR})
