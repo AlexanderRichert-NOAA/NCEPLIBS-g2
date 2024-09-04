@@ -53,7 +53,7 @@ subroutine aecpack(fld,width,height,idrstmpl,cpack,lcpack)
     integer(c_size_t), value, intent(in) :: width, height
     integer(c_int), intent(inout) :: idrstmpl(*)
     character(kind=c_char), intent(out) :: cpack(*)
-    integer(c_size_t), intent(out) :: lcpack
+    integer(c_size_t), intent(inout) :: lcpack
     integer(c_int) :: g2c_aecpackd
    end function g2c_aecpackd
    function g2c_aecpackf(fld, width, height, idrstmpl, cpack, lcpack) bind(c)
@@ -62,7 +62,7 @@ subroutine aecpack(fld,width,height,idrstmpl,cpack,lcpack)
     integer(c_size_t), value, intent(in) :: width, height
     integer(c_int), intent(inout) :: idrstmpl(*)
     character(kind=c_char), intent(out) :: cpack(*)
-    integer(c_size_t), intent(out) :: lcpack
+    integer(c_size_t), intent(inout) :: lcpack
     integer(c_int) :: g2c_aecpackf
    end function g2c_aecpackf
   end interface
