@@ -215,6 +215,10 @@ foreach(kind ${kinds})
     create_test(test_gdt2gds ${kind})
   endif()
 
+  if (USE_AEC)
+    create_test(test_aecpack ${kind})
+  endif()
+
   if (${kind} EQUAL "4")
     # Add this script to ensure that jasper is not issuing warnings.
     gu_test(run_jasper_warning_test)  
