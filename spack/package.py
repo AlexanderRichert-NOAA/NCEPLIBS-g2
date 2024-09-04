@@ -67,6 +67,7 @@ class G2(CMakePackage):
             self.define_from_variant("OPENMP", "openmp"),
             self.define_from_variant("CMAKE_POSITION_INDEPENDENT_CODE", "pic"),
             self.define_from_variant("BUILD_WITH_W3EMC", "w3emc"),
+            self.define_from_variant("USE_AEC", "aec"),
             self.define_from_variant("BUILD_SHARED_LIBS", "shared"),
             self.define("BUILD_4", self.spec.satisfies("precision=4")),
             self.define("BUILD_D", self.spec.satisfies("precision=d")),
