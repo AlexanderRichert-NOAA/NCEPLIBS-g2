@@ -10,8 +10,8 @@ program test_aecpack
   real, parameter :: delta = 0.0000001
   real :: fld(ndpts), fld2(ndpts)
   integer :: idrstmpl(8)
-  character(len=1) :: cpack(80)
-  integer :: lcpack = 80
+  character(len=1) :: cpack(200)
+  integer :: lcpack = 200
   integer :: i
 
   print *, 'Testing aecpack()/aecunpack()...'
