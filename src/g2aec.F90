@@ -76,6 +76,8 @@ subroutine aecpack(fld,width,height,idrstmpl,cpack,lcpack)
 #else
   ret = g2c_aecpackd(fld, width_c, height_c, idrstmpl, cpack, lcpack_c)
 #endif
+
+  lcpack = lcpack_c
   print *, ret 
 end subroutine
   
