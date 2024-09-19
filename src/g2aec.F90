@@ -43,7 +43,7 @@ subroutine aecpack(fld,width,height,idrstmpl,cpack,lcpack)
   character(len=1),intent(out) :: cpack(*)
   integer,intent(inout) :: idrstmpl(*)
   integer,intent(inout) :: lcpack
-  integer(c_size_t) :: width_c, height_c, lcpack_c
+  integer(c_size_t) :: width_c, height_c
   integer :: ret
 
   interface
@@ -53,7 +53,7 @@ subroutine aecpack(fld,width,height,idrstmpl,cpack,lcpack)
     integer(c_size_t), value, intent(in) :: width, height
     integer(c_int), intent(inout) :: idrstmpl(*)
     character(kind=c_char), intent(out) :: cpack(*)
-    integer(c_size_t), intent(inout) :: lcpack
+    integer(c_int), intent(out) :: lcpack
     integer(c_int) :: g2c_aecpackd
    end function g2c_aecpackd
    function g2c_aecpackf(fld, width, height, idrstmpl, cpack, lcpack) bind(c)
@@ -62,23 +62,20 @@ subroutine aecpack(fld,width,height,idrstmpl,cpack,lcpack)
     integer(c_size_t), value, intent(in) :: width, height
     integer(c_int), intent(inout) :: idrstmpl(*)
     character(kind=c_char), intent(out) :: cpack(*)
-    integer(c_size_t), intent(inout) :: lcpack
+    integer(c_int), intent(out) :: lcpack
     integer(c_int) :: g2c_aecpackf
    end function g2c_aecpackf
   end interface
 
   width_c = width
   height_c = height
-  lcpack_c = lcpack
   
 #if KIND==4
-  ret = g2c_aecpackf(fld, width_c, height_c, idrstmpl, cpack, lcpack_c)
+  ret = g2c_aecpackf(fld, width_c, height_c, idrstmpl, cpack, lcpack)
 #else
-  ret = g2c_aecpackd(fld, width_c, height_c, idrstmpl, cpack, lcpack_c)
+  ret = g2c_aecpackd(fld, width_c, height_c, idrstmpl, cpack, lcpack)
 #endif
 
-  lcpack = lcpack_c
-  print *, ret 
 end subroutine
   
 !> Unpack a data field from a AEC code stream as defined in
@@ -118,14 +115,14 @@ subroutine aecunpack(cpack,len,idrstmpl,ndpts,fld)
     integer(c_int) :: g2c_aecunpackd
    end function g2c_aecunpackd
    function g2c_aecunpackf(cpack, len, idrstmpl, ndpts, fld) bind(c)
-      use, intrinsic :: iso_c_binding
-      implicit none 
-      integer(c_size_t), value, intent(in) :: len
-      integer(c_size_t), value, intent(in) :: ndpts 
-      character(kind=c_char), intent(in) :: cpack(*)
-      integer(c_int), intent(in) :: idrstmpl(*)
-      real(kind=c_float), intent(out) :: fld(*)
-      integer(c_int) :: g2c_aecunpackf
+    use, intrinsic :: iso_c_binding
+    implicit none 
+    integer(c_size_t), value, intent(in) :: len
+    integer(c_size_t), value, intent(in) :: ndpts 
+    character(kind=c_char), intent(in) :: cpack(*)
+    integer(c_int), intent(in) :: idrstmpl(*)
+    real(kind=c_float), intent(out) :: fld(*)
+    integer(c_int) :: g2c_aecunpackf
    end function g2c_aecunpackf
   end interface
 
@@ -137,6 +134,4 @@ subroutine aecunpack(cpack,len,idrstmpl,ndpts,fld)
   ret = g2c_aecunpackd(cpack, len_c, idrstmpl, ndpts_c, fld)
 #endif
   
-  print *, ret 
-
 end subroutine aecunpack

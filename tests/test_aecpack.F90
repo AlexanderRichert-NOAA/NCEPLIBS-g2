@@ -17,7 +17,8 @@ program test_aecpack
   print *, 'Testing aecpack()/aecunpack()...'
 
   ! Create the fld variable with data to pack
-  fld = (/1.0, 2.0, 3.0, 4.0/)
+  fld = (/1.0, 1.0, 1.0, 1.0/)
+  fld2 = (/0, 0, 0, 0/)
 
   idrstmpl(1) = 0
   idrstmpl(2) = 1
@@ -28,18 +29,58 @@ program test_aecpack
   idrstmpl(7) = 16
   idrstmpl(8) = 128
 
-  ! Testing aecpack
-  call aecpack(fld, width, height, idrstmpl, cpack, lcpack)
-  print *, 'lcpack: ', lcpack
+  print *, 'Testing aecpack/aecunpack with no data...'
 
-  ! Testing aecunpack
+  ! Pack the data.
+  call aecpack(fld, 0, height, idrstmpl, cpack, lcpack)
+  print *, 'lcpack: ', lcpack
+  if (lcpack .ne. 0) stop 1
+  
+  ! Unpack the data.
+  call aecunpack(cpack, lcpack, idrstmpl, 0, fld2)
+
+  do i=1,ndpts
+    if (fld2(i) .ge. delta) then 
+      print *, fld2(i), ' does not equal zero'
+      stop 2
+    end if 
+  end do
+  
+  print *, 'ok!'
+  print *, 'Testing aecpack/aecunpack with constant data...'
+
+  call aecpack(fld, width, height, idrstmpl, cpack, lcpack)
+  if (lcpack .ne. 0) stop 3
+
+  ! Unpack the data.
+  call aecunpack(cpack, lcpack, idrstmpl, ndpts, fld2)
+
+    ! Compare each value to see match, reals do not compare well
+  do i = 1, ndpts
+    if (abs(fld(i) - fld2(i)) .ge. delta) then
+       print *, fld(i), fld2(i), 'do not match'
+       stop 4
+    end if
+  end do
+
+  print *, 'ok!'
+  print *, 'Testing aecpack/aecunpack with data...'
+
+  fld = (/1.0, 2.0, 3.0, 4.0/)
+
+  ! Pack the data.
+  lcpack = 80
+  call aecpack(fld, width, height, idrstmpl, cpack, lcpack)
+  if (lcpack .le. 0) stop 5
+
+    ! Unpack the data.
   call aecunpack(cpack, lcpack, idrstmpl, ndpts, fld2)
 
   ! Compare each value to see match, reals do not compare well
   do i = 1, ndpts
      if (abs(fld(i) - fld2(i)) .ge. delta) then
         print *, fld(i), fld2(i), 'do not match'
-        stop 4
+        stop 6
      end if
   end do
 
