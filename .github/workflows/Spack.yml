@@ -26,7 +26,7 @@ jobs:
     strategy:
       matrix:
         os: ["ubuntu-latest"]
-        variants: ["+shared +pic precision=d +w3emc +utils", "~shared ~pic precision=4 ~w3emc ~utils"]
+        variants: ["+shared +pic precision=d +w3emc +utils +aec", "~shared ~pic precision=4 ~w3emc ~utils +aec"]
     runs-on: ${{ matrix.os }}
 
     steps:
