@@ -24,7 +24,10 @@ concurrency:
 jobs:
   Linux_options:
     runs-on: ubuntu-24.04
-    container: ghcr.io/noaa-emc/ci-common-build-cache/nceplibs-develop-ubuntu-24.04-gcc-14-mpich-x:latest
+    container:
+      image: ghcr.io/noaa-emc/ci-common-build-cache/nceplibs-develop-ubuntu-24.04-gcc-14-mpich-x:latest
+      volumes:
+        - /usr:/usr
     env:
       FC: gfortran
       CC: gcc
