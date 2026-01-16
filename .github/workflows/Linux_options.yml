@@ -28,6 +28,7 @@ jobs:
       image: ghcr.io/noaa-emc/ci-common-build-cache/nceplibs-develop-ubuntu-24.04-gcc-14-mpich-x:latest
       volumes:
         - /usr:/usr
+        - /etc:/etc
     env:
       FC: gfortran
       CC: gcc
